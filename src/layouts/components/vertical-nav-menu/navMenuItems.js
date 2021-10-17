@@ -593,6 +593,13 @@ export default [
         i18n: 'Table'
       },
       {
+        url: '/ui-elements/table2',
+        name: 'Table2',
+        slug: 'table2',
+        icon: 'GridIcon',
+        i18n: 'Table2'
+      },
+      {
         url: '/ui-elements/ag-grid-table',
         name: 'agGrid Table',
         slug: 'ag-grid-table',

@@ -11,6 +11,7 @@
     "ag-grid-community": "^21.0.1",
     "ag-grid-vue": "^21.0.1",
     "algoliasearch": "^3.33.0",
+    "ant-design-vue": "^1.7.8",
     "apexcharts": "^3.6.12",
     "auth0-js": "^9.10.4",
     "axios": "^0.21.0",

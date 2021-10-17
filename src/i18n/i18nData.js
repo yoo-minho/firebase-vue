@@ -31,6 +31,7 @@ export default {
     CardActions: 'Card Actions',
     CardColors: 'Card Colors',
     Table: 'Table',
+    Table2: 'Table2',
     agGridTable: 'agGrid Table',
     Components: 'Components',
     Alert: 'Alert',

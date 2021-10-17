@@ -54,7 +54,7 @@ const router = new Router({
           component: () => import('./views/pages/test.vue'),
           meta: {
             rule: 'editor',
-            authRequired: false,
+            authRequired: true,
           }
         },
         {
@@ -380,15 +380,16 @@ const router = new Router({
           }
         },
         {
-          path: '/ui-elements/table',
-          name: 'table',
-          component: () => import('./views/ui-elements/table/Table.vue'),
+          path: '/ui-elements/table2',
+          name: 'table2',
+          component: () => import('./views/pages/Table2.vue'),
           meta: {
+            authRequired: false,
             breadcrumb: [
               { title: 'Home', url: '/' },
               { title: 'Table', active: true }
             ],
-            pageTitle: 'Table',
+            pageTitle: 'Table 테스트',
             rule: 'editor'
           }
         },
