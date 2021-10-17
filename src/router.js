@@ -54,7 +54,7 @@ const router = new Router({
           component: () => import('./views/pages/test.vue'),
           meta: {
             rule: 'editor',
-            authRequired: true,
+            authRequired: false,
           }
         },
         {
