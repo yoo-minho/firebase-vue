@@ -13,7 +13,8 @@
       <vs-input class="inputx" placeholder="Age" v-model="age"></vs-input>
       <vs-input class="inputx" placeholder="Address" v-model="address"></vs-input>
       <vs-button @click="onAddData()" size="small">신규데이터추가</vs-button>
-            <vs-button @click="onUpdateData()" size="small">업데이트</vs-button>
+      <vs-button @click="onUpdateData()" size="small">업데이트</vs-button>
+      <vs-button @click="onDeleteData()" size="small">삭제</vs-button>
     </vx-card>
   </div>
 </template>
@@ -67,7 +68,7 @@ export default {
       this.address = r.address;
       this.key = r.key;
     },
-    onInitData(){
+    onInitData() {
       this.key = "";
       this.name = "";
       this.age = "";
@@ -76,13 +77,18 @@ export default {
     onRefreshData() {
       var self = this;
       this.data = this.data.filter(item => {
-        if(item.key === self.key){
+        if (item.key === self.key) {
           item.name = self.name;
           item.age = self.age;
           item.address = self.address;
         }
         return item;
       })
+      this.onInitData();
+    },
+    onPopupData() {
+      var self = this;
+      this.data = this.data.filter(item => (item.key !== self.key))
       this.onInitData();
     },
     onLoadData() {
@@ -113,20 +119,31 @@ export default {
         console.error("error", error);
       })
     },
+    onDeleteData() {
+      var self = this;
+      var db = firebase.firestore();
+      db.collection("bbs").doc(this.key).delete().then(() => {
+        self.onPopupData();
+        console.log("delete");
+      }).catch((error) => {
+        console.error("error", error);
+      })
+    },
     onAddData() {
       console.log("aaaaa")
       var db = firebase.firestore();
       var self = this;
       var user = firebase.auth().currentUser;
       if (user) {
-        db.collection("bbs")
-            .add({
-              uid: user.uid,
-              name: self.name,
-              age: self.age,
-              address: self.address,
-            }).then(function () {
-          alert("적용!")
+        var addData = {
+          uid: user.uid,
+          name: self.name,
+          age: self.age,
+          address: self.address,
+        }
+        db.collection("bbs").add(addData).then(function (mRef) {
+          addData.key = mRef.id;
+          self.data.push(addData);
         })
       }
     }
