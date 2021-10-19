@@ -2,6 +2,9 @@
   <div>
     <vx-card title="테이블 테스트">
       <a-table :columns="columns" :data-source="data">
+        <template slot="operation" slot-scope="record">
+          <vs-button @click="() => edit(record)">선택</vs-button>
+        </template>
         <a slot="name" slot-scope="text">{{ text }}</a>
       </a-table>
     </vx-card>
@@ -9,12 +12,8 @@
       <vs-input class="inputx" placeholder="Name" v-model="name"></vs-input>
       <vs-input class="inputx" placeholder="Age" v-model="age"></vs-input>
       <vs-input class="inputx" placeholder="Address" v-model="address"></vs-input>
-      <vs-button
-          @click="onAddData()"
-          icon-pack="feather"
-          icon="icon-chevrons-right"
-          icon-after
-          class="shadow-md w-full lg:mt-0 mt-4">신규데이터추가</vs-button>
+      <vs-button @click="onAddData()" size="small">신규데이터추가</vs-button>
+            <vs-button @click="onUpdateData()" size="small">업데이트</vs-button>
     </vx-card>
   </div>
 </template>
@@ -28,6 +27,7 @@ export default {
       name: "",
       age: "",
       address: "",
+      key: "",
       columns: [
         {
           title: 'Name',
@@ -46,33 +46,73 @@ export default {
           dataIndex: 'address',
           key: 'address 1',
           ellipsis: true,
+        },
+        {
+          title: 'action',
+          key: 'address 1',
+          scopedSlots: {customRender: "operation"}
         }
-      ], data: [
-        {
-          key: '1',
-          name: 'John Brown',
-          age: 32,
-          address: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-          tags: ['nice', 'developer'],
-        },
-        {
-          key: '2',
-          name: 'Jim Green',
-          age: 42,
-          address: 'London No. 2 Lake Park, London No. 2 Lake Park',
-          tags: ['loser'],
-        },
-        {
-          key: '3',
-          name: 'Joe Black',
-          age: 32,
-          address: 'Sidney No. 1 Lake Park, Sidney No. 1 Lake Park',
-          tags: ['cool', 'teacher'],
-        },
-      ]
+      ],
+      data: []
     }
   },
+  mounted() {
+    this.onLoadData();
+  },
   methods: {
+    edit(r) {
+      console.log(r)
+      this.name = r.name;
+      this.age = r.age;
+      this.address = r.address;
+      this.key = r.key;
+    },
+    onInitData(){
+      this.key = "";
+      this.name = "";
+      this.age = "";
+      this.address = "";
+    },
+    onRefreshData() {
+      var self = this;
+      this.data = this.data.filter(item => {
+        if(item.key === self.key){
+          item.name = self.name;
+          item.age = self.age;
+          item.address = self.address;
+        }
+        return item;
+      })
+      this.onInitData();
+    },
+    onLoadData() {
+      var db = firebase.firestore();
+      var self = this;
+      self.data = [];
+      db.collection("bbs").get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          var _t = doc.data();
+          _t["key"] = doc.id
+          self.data.push(_t)
+        })
+      })
+    },
+    onUpdateData() {
+      var db = firebase.firestore();
+      var _ref = db.collection("bbs").doc(this.key);
+      var self = this;
+      var updateJson = {
+        name: self.name,
+        age: self.age,
+        address: self.address
+      }
+      _ref.update(updateJson).then(() => {
+        self.onRefreshData();
+        console.log("update!!")
+      }).catch(error => {
+        console.error("error", error);
+      })
+    },
     onAddData() {
       console.log("aaaaa")
       var db = firebase.firestore();
