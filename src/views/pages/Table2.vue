@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vx-card title="테이블 테스트">
+    <vx-card title="테이블 테스트 444">
       <a-table :columns="columns" :data-source="data">
         <template slot="img" slot-scope="record">
           <img v-if="record.img" :src="record.img" alt="record.alt" style="width:50px; height:50px;">
@@ -233,6 +233,9 @@ export default {
           addData.key = mRef.id;
           self.data.push(addData);
         })
+      } else {
+        this.onInitData();
+        alert('로그인 하셈');
       }
     }
   }
